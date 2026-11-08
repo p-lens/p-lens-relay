@@ -1,0 +1,14 @@
+# The relay at its host, its certificate got and renewed by Caddy; the
+# issuer, where one is started (--profile issuer), at the same host's
+# /tickets and /plans, which no relay's address takes.
+{$RELAY_HOST} {
+	handle /tickets {
+		reverse_proxy issuer:7781
+	}
+	handle /plans {
+		reverse_proxy issuer:7781
+	}
+	handle {
+		reverse_proxy relay:7780
+	}
+}

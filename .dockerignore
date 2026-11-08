@@ -1,0 +1,7 @@
+**/node_modules
+**/.wrangler
+.git
+hosts/bun/dist
+hosts/bun/data
+hosts/bun/.env
+hosts/cloudflare/*.production.jsonc

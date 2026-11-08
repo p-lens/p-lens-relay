@@ -1,0 +1,56 @@
+# The P-Lens relay on a server of one's own, with Caddy in front of it for
+# the wss:// certificate. From this folder, with .env made from .env.example:
+#
+#   docker compose up -d        (or: podman compose up -d)
+#
+# The ticket issuer is for a relay taking payment, and starts only when asked:
+#
+#   docker compose --profile issuer up -d
+services:
+  relay:
+    build:
+      context: ../..
+      dockerfile: hosts/bun/Dockerfile
+    image: p-lens-relay-bun
+    command: ["p-lens-relay"]
+    environment:
+      ENTITLEMENT: ${ENTITLEMENT:-open}
+      RELAY_NAME: ${RELAY_NAME:-P-Lens relay}
+      RELAY_DESCRIPTION: ${RELAY_DESCRIPTION:-}
+      ISSUER_URL: ${ISSUER_URL:-}
+      ISSUER_PUBLIC_KEY: ${ISSUER_PUBLIC_KEY:-}
+      PORT: "7780"
+    volumes:
+      - relay-data:/data
+    restart: unless-stopped
+
+  issuer:
+    profiles: ["issuer"]
+    image: p-lens-relay-bun
+    command: ["p-lens-issuer"]
+    environment:
+      ISSUER_PRIVATE_KEY: ${ISSUER_PRIVATE_KEY:-}
+      ADMIN_TOKEN: ${ADMIN_TOKEN:-}
+      PORT: "7781"
+    volumes:
+      - issuer-data:/data
+    restart: unless-stopped
+
+  caddy:
+    image: docker.io/library/caddy:2.10.2
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      RELAY_HOST: ${RELAY_HOST:?RELAY_HOST names the relay's host, in .env}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    restart: unless-stopped
+
+volumes:
+  relay-data:
+  issuer-data:
+  caddy-data:
+  caddy-config:

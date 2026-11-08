@@ -1,0 +1,10 @@
+{
+  // The P-Lens ticket issuer, for trying a build. A deployment uses
+  // wrangler.issuer.production.jsonc, made from wrangler.issuer.production.example.jsonc
+  // and kept out of git.
+  "name": "p-lens-issuer",
+  "main": "src/issuer/worker.ts",
+  "compatibility_date": "2026-09-01",
+  "durable_objects": { "bindings": [{ "name": "DESK", "class_name": "Desk" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Desk"] }]
+}

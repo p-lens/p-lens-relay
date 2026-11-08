@@ -1,0 +1,22 @@
+{
+  // A deployment of the P-Lens relay on Cloudflare. Copy this file to
+  // wrangler.relay.production.jsonc (ignored by git), fill in what is marked
+  // <…>, then: bun --cwd=hosts/cloudflare run deploy:relay
+  //
+  // Each product may have a host of its own (books, sending, huddles), all
+  // routed to this one deployment; a line's address carries its host, so a
+  // host can later be moved to a deployment of its own by DNS alone.
+  //
+  // ENTITLEMENT: "open" for one's own relay; "capped" for a relay others use
+  // before payment, holding every line to fixed caps; "gated" for one taking
+  // payment, which needs ISSUER_URL (the issuer's https:// address, told to
+  // clients by NIP-11) and ISSUER_PUBLIC_KEY (from tickets' make-key).
+  "name": "p-lens-relay",
+  "main": "src/relay/worker.ts",
+  "compatibility_date": "2026-09-01",
+  "workers_dev": false,
+  "routes": [{ "pattern": "<relay.example.com>", "custom_domain": true }],
+  "vars": { "ENTITLEMENT": "open", "RELAY_NAME": "<a name>", "RELAY_DESCRIPTION": "<what it is for>" },
+  "durable_objects": { "bindings": [{ "name": "BUCKETS", "class_name": "Bucket" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Bucket"] }]
+}

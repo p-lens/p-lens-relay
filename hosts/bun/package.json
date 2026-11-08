@@ -1,0 +1,24 @@
+{
+  "name": "@p-lens-relay/bun",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "test": "bun test",
+    "check": "tsc --noEmit",
+    "relay": "bun src/relay.ts",
+    "issuer": "bun src/issuer.ts",
+    "compile": "bun build --compile --minify src/relay.ts --outfile dist/p-lens-relay && bun build --compile --minify src/issuer.ts --outfile dist/p-lens-issuer"
+  },
+  "dependencies": {
+    "@p-lens-relay/issuer": "workspace:*",
+    "@p-lens-relay/relay": "workspace:*",
+    "@p-lens-relay/sql": "workspace:*"
+  },
+  "devDependencies": {
+    "@p-lens-relay/core": "workspace:*",
+    "@p-lens-relay/gate": "workspace:*",
+    "@types/bun": "^1.4.4",
+    "typescript": "^7.0.2"
+  }
+}

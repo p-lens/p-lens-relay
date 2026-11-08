@@ -1,0 +1,14 @@
+{
+  "name": "@p-lens-relay/sql",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "exports": { ".": "./src/index.ts", "./testing": "./src/testing.ts" },
+  "scripts": {
+    "check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.4",
+    "typescript": "^7.0.2"
+  }
+}

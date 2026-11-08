@@ -1,0 +1,11 @@
+{
+  // The P-Lens relay, for trying a build. A deployment uses
+  // wrangler.relay.production.jsonc, made from wrangler.relay.production.example.jsonc
+  // and kept out of git, so that no account's hosts reach this repository.
+  "name": "p-lens-relay",
+  "main": "src/relay/worker.ts",
+  "compatibility_date": "2026-09-01",
+  "vars": { "ENTITLEMENT": "open" },
+  "durable_objects": { "bindings": [{ "name": "BUCKETS", "class_name": "Bucket" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Bucket"] }]
+}

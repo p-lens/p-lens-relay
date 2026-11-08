@@ -1,0 +1,21 @@
+{
+  "name": "@p-lens-relay/issuer",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "bun test",
+    "check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@p-lens-relay/sql": "workspace:*",
+    "@p-lens-relay/tickets": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.4",
+    "typescript": "^7.0.2"
+  }
+}

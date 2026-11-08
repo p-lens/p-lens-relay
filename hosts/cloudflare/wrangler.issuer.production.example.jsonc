@@ -1,0 +1,19 @@
+{
+  // A deployment of the P-Lens ticket issuer on Cloudflare. Copy this file
+  // to wrangler.issuer.production.jsonc (ignored by git), fill in what is
+  // marked <…>, then set its secrets and deploy:
+  //
+  //   bun --cwd=packages/tickets run make-key   # once; the public key goes to the relay
+  //   bunx wrangler secret put ISSUER_PRIVATE_KEY --config wrangler.issuer.production.jsonc
+  //   bunx wrangler secret put ADMIN_TOKEN --config wrangler.issuer.production.jsonc   # 32 characters or more
+  //   bun --cwd=hosts/cloudflare run deploy:issuer
+  //
+  // Its https:// address is the relay's ISSUER_URL.
+  "name": "p-lens-issuer",
+  "main": "src/issuer/worker.ts",
+  "compatibility_date": "2026-09-01",
+  "workers_dev": false,
+  "routes": [{ "pattern": "<issuer.example.com>", "custom_domain": true }],
+  "durable_objects": { "bindings": [{ "name": "DESK", "class_name": "Desk" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Desk"] }]
+}

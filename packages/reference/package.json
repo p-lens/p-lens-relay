@@ -1,0 +1,24 @@
+{
+  "name": "@p-lens-relay/reference",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    "./pad": "./src/pad.ts",
+    "./seal": "./src/seal.ts"
+  },
+  "scripts": {
+    "test": "bun test",
+    "check": "tsc --noEmit",
+    "vectors": "bun scripts/write-vectors.ts"
+  },
+  "dependencies": {
+    "@noble/curves": "2.0.1"
+  },
+  "devDependencies": {
+    "@noble/ciphers": "2.1.1",
+    "@noble/hashes": "2.0.1",
+    "@types/bun": "^1.4.4",
+    "typescript": "^7.0.2"
+  }
+}
