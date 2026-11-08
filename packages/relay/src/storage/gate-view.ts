@@ -1,5 +1,6 @@
 import { accessListOf, grantKey, KIND, type GateView, type Grant, type HeldList, type ListedProduct, type Product } from "@p-lens-relay/gate"
 import { numberOf, textOf, type Row, type Sql } from "@p-lens-relay/sql"
+import { KEPT } from "./schema"
 
 const heldListOf = (row: Row): readonly HeldList[] => {
   const owner = textOf(row, "pubkey")
@@ -10,15 +11,15 @@ const heldListOf = (row: Row): readonly HeldList[] => {
 
 const accessList = (sql: Sql, owner: string, product: ListedProduct): HeldList | undefined =>
   sql
-    .run("SELECT pubkey, d, json_extract(raw, '$.content') AS content FROM events WHERE kind = ? AND pubkey = ?", KIND.accessList, owner)
+    .run(`SELECT pubkey, d, json_extract(raw, '$.content') AS content FROM ${KEPT} WHERE kind = ? AND pubkey = ?`, KIND.accessList, owner)
     .flatMap(heldListOf)
     .find((held) => held.list.product === product)
 
 const listedBy = (sql: Sql, member: string, role: "editor" | "sender"): readonly HeldList[] =>
   sql
     .run(
-      `SELECT events.pubkey AS pubkey, events.d AS d, json_extract(events.raw, '$.content') AS content
-       FROM members JOIN events ON events.id = members.event_id
+      `SELECT kept.pubkey AS pubkey, kept.d AS d, json_extract(kept.raw, '$.content') AS content
+       FROM members JOIN ${KEPT} AS kept ON kept.id = members.event_id
        WHERE members.pubkey = ? AND members.role = ?`,
       member,
       role,
@@ -35,7 +36,7 @@ export const sqlView = (sql: Sql, now: number): GateView => ({
   accessList: (owner, product) => accessList(sql, owner, product),
   listedBy: (member, role) => listedBy(sql, member, role),
   huddleAuthors: (v) =>
-    new Set(sql.run("SELECT DISTINCT pubkey FROM events WHERE kind = ? AND v = ?", KIND.huddleState, v).flatMap((row) => textOf(row, "pubkey") ?? [])),
+    new Set(sql.run(`SELECT DISTINCT pubkey FROM ${KEPT} WHERE kind = ? AND v = ?`, KIND.huddleState, v).flatMap((row) => textOf(row, "pubkey") ?? [])),
 })
 
 /** Keeps a grant and spends its ticket, forgetting grants and tickets that have run out. */
